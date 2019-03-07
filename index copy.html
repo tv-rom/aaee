@@ -1,0 +1,148 @@
+<html>
+
+<head>
+  <title>All Along Electronic Entertainment Co.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+ 
+<script>
+	document.addEventListener('touchmove', function (event) {
+  	if (event.scale !== 1) { event.preventDefault(); }
+}, false);
+</script>
+
+  <style>
+    body{
+   		margin: 0;
+   		overflow: hidden;
+   		background-color: #ff5858;
+    }
+
+    canvas{
+    	background: #ff5858;
+    }
+
+    #copy{
+    position: absolute;
+    color:#ff5858;
+    display: block;
+    
+    top: 60%;
+    width:100%;
+    text-align:center;
+    font-family: helvetica;
+    font-size:10px;
+    }
+
+    #logo{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+
+    #world {
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+  </style>
+</head>
+
+<body>
+	<div id="logo">
+<img src="AAEE7.png" width="100%" height="auto" >
+</div>
+
+	<script src="http://threejs.org/build/three.min.js"></script>
+<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+	<script>
+// a basic three.js scene
+
+var group, container, renderer, scene, camera, controls;
+
+init();
+animate();
+
+function init() {
+
+    // renderer
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xccccff);
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    container.appendChild(renderer.domElement);
+
+    // scene
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0x5864ff );
+
+    // camera
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+    camera.position.set(0, 200, 0);
+    camera.lookAt(scene.position);
+
+    // (camera) controls
+    // mouse controls: left button to rotate, 
+    //    mouse wheel to zoom, right button to pan
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // light    
+    var light = new THREE.PointLight(0xffffff);
+    light.position.set(100, 250, 250);
+    scene.add(light);
+
+    // mesh
+
+    group = new THREE.Group();
+	scene.add( group );
+   
+		var geometry = new THREE.IcosahedronBufferGeometry(700, 1);
+		var geometry2 = new THREE.IcosahedronBufferGeometry(7000, 1);
+	
+		var material = new THREE.MeshBasicMaterial({
+					color: 0xff5858,
+					
+			});
+		var material2 = new THREE.MeshBasicMaterial({
+					color: 0xffffff,
+					wireframe: true
+					
+			});
+
+		
+
+		
+		var mesh2 = new THREE.Mesh(geometry,material2);
+
+		mesh2.position.set(0,0,-250);
+
+		group.add( mesh2 );
+    // events
+    window.addEventListener('resize', onWindowResize, false);
+
+}
+
+function onWindowResize(event) {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function animate() {
+
+	requestAnimationFrame(animate);
+	group.rotation.y += 0.0005;
+	group.rotation.x += 0.0005;
+    render();
+}
+
+function render(){
+	renderer.render(scene, camera);
+}
+</script>
+</body>
+</html>
