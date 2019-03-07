@@ -69,7 +69,7 @@
 		scene.background = new THREE.Color( 0x5864ff );
 		
 
-		var geometry = new THREE.IcosahedronBufferGeometry(1000, 1);
+		var geometry = new THREE.IcosahedronBufferGeometry(100, 1);
 		var geometry2 = new THREE.IcosahedronBufferGeometry(300, 1);
 	
 		var material = new THREE.MeshBasicMaterial({
@@ -87,8 +87,8 @@
 		var mesh = new THREE.Mesh(geometry,material);
 		var mesh2 = new THREE.Mesh(geometry,material2);
 
-		mesh.position.set(0,0,-1000);
-		mesh2.position.set(0,-10,-1000);
+		mesh.position.set(0,0,-200);
+		mesh2.position.set(0,-10,-200);
 
 		
 		scene.add(mesh2);
