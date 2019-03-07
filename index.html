@@ -54,6 +54,7 @@
 
 	<script src="three.js"></script>
 	
+	
 
 	<script>
 		var renderer = new THREE.WebGLRenderer({
@@ -63,16 +64,22 @@
 		renderer.setClearColor(0x00ff00);
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild( renderer.domElement );
 
 		var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 3000);
+
 		
 
 		var scene = new THREE.Scene();
 		scene.background = new THREE.Color( 0x5864ff );
 		
+		
 
-		var geometry = new THREE.IcosahedronBufferGeometry(100, 1);
-		var geometry2 = new THREE.IcosahedronBufferGeometry(350, 1);
+//----------
+
+
+		var geometry = new THREE.IcosahedronBufferGeometry(700, 1);
+		var geometry2 = new THREE.IcosahedronBufferGeometry(7000, 1);
 	
 		var material = new THREE.MeshBasicMaterial({
 					color: 0xff5858,
