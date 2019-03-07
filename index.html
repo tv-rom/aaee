@@ -60,7 +60,7 @@
 	<canvas id="myCanvas"></canvas>
 
 	<script src="three.js"></script>
-	
+	<script src="OrbitControls.js"></script>
 	
 
 	<script>
@@ -71,7 +71,7 @@
 		renderer.setClearColor(0x00ff00);
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		document.body.appendChild( renderer.domElement );
+		
 
 		var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 3000);
 
