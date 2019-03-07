@@ -48,8 +48,8 @@
 <img src="AAEE7.png" width="100%" height="auto" >
 </div>
 
-	<script src="three.js"></script>
-<script src="OrbitControls.js"></script>
+	<script src="http://threejs.org/build/three.min.js"></script>
+<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
 	
 
 	<script>
@@ -86,12 +86,6 @@ function init() {
     //    mouse wheel to zoom, right button to pan
     controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    // light    
-    var light = new THREE.PointLight(0xffffff);
-    light.position.set(100, 250, 250);
-    scene.add(light);
-
-    // mesh
 
     group = new THREE.Group();
 	scene.add( group );
