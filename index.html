@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <title>All Along Electronic Entertainment Co.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -49,42 +50,56 @@
 </head>
 
 <body>
-
-<div id="copy">
-
-</div>
-
-<div id="logo">
+	<div id="logo">
 <img src="AAEE7.png" width="100%" height="auto" >
 </div>
-	<canvas id="myCanvas"></canvas>
 
-	<script src="three.js"></script>
-	<script src="OrbitControls.js"></script>
-	
-
+	<script src="http://threejs.org/build/three.min.js"></script>
+<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
 	<script>
-		var renderer = new THREE.WebGLRenderer({
-			canvas: document.getElementById('myCanvas'),
-			antialias: true,
-			alpha: true});
-		renderer.setClearColor(0x00ff00);
-		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		
+// a basic three.js scene
 
-		var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 3000);
+var group, container, renderer, scene, camera, controls;
 
-		
+init();
+animate();
 
-		var scene = new THREE.Scene();
-		scene.background = new THREE.Color( 0x5864ff );
-		
-		
+function init() {
 
-//----------
+    // renderer
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xccccff);
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    container.appendChild(renderer.domElement);
 
+    // scene
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0x5864ff );
 
+    // camera
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+    camera.position.set(0, 200, 0);
+    camera.lookAt(scene.position);
+
+    // (camera) controls
+    // mouse controls: left button to rotate, 
+    //    mouse wheel to zoom, right button to pan
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // light    
+    var light = new THREE.PointLight(0xffffff);
+    light.position.set(100, 250, 250);
+    scene.add(light);
+
+    // mesh
+
+    group = new THREE.Group();
+	scene.add( group );
+   
 		var geometry = new THREE.IcosahedronBufferGeometry(700, 1);
 		var geometry2 = new THREE.IcosahedronBufferGeometry(7000, 1);
 	
@@ -100,49 +115,34 @@
 
 		
 
-		var mesh = new THREE.Mesh(geometry,material);
+		
 		var mesh2 = new THREE.Mesh(geometry,material2);
 
-		mesh.position.set(0,-25,-200);
 		mesh2.position.set(0,0,-250);
 
-		
-		scene.add(mesh2);
-
-					window.addEventListener( 'resize', onWindowResize, false );
-
-					function onWindowResize(){
-
-				    camera.aspect = window.innerWidth / window.innerHeight;
-				    camera.updateProjectionMatrix();
-
-				    renderer.setSize( window.innerWidth, window.innerHeight );
+		group.add( mesh2 );
+    // events
+    window.addEventListener('resize', onWindowResize, false);
 
 }
 
+function onWindowResize(event) {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
+function animate() {
 
+	requestAnimationFrame(animate);
+	group.rotation.y += 0.0005;
+	group.rotation.x += 0.0005;
+    render();
+}
 
-
-		requestAnimationFrame(render);
-
-
-		function render(){
-
-		mesh.rotation.x+=0.001;
-		mesh.rotation.y+=0.001;
-
-		mesh2.rotation.x+=0.001;
-		mesh2.rotation.y+=0.001;
-
-		renderer.render(scene,camera);
-		requestAnimationFrame(render);
-		}
-
-	
-
-	</script>
-
-
+function render(){
+	renderer.render(scene, camera);
+}
+</script>
 </body>
 </html>
