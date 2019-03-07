@@ -60,10 +60,21 @@
 
 		mesh.rotation.x+=0.001;
 		mesh.rotation.y+=0.001;
-		
+
 		renderer.render(scene,camera);
 		requestAnimationFrame(render);
 		}
+
+		window.addEventListener( 'resize', onWindowResize, false );
+
+	function onWindowResize(){
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
 
 	</script>
 
