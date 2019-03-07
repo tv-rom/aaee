@@ -81,6 +81,7 @@ function init() {
     // mouse controls: left button to rotate, 
     //    mouse wheel to zoom, right button to pan
     controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
 
 
     group = new THREE.Group();
