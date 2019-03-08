@@ -95,21 +95,22 @@ function init() {
    
 		var geometry = new THREE.IcosahedronBufferGeometry(700, 1);
 		var geometry2 = new THREE.IcosahedronBufferGeometry(7000, 1);
+		
+		var geometry3 = new THREE.SphereGeometry( 5, 32, 32 );
+		
 	
 		var material = new THREE.MeshBasicMaterial({
-					color: 0xff5858,
-					
+					color: 0xff5858,		
 			});
 		var material2 = new THREE.MeshBasicMaterial({
 					color: 0xffffff,
-					wireframe: true
-					
+					wireframe: true		
 			});
 		
 	
-		var material3 = new THREE.MeshToonMaterial( );
-
-		
+		var material3 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+		var sphere = new THREE.Mesh( geometry, material3 );
+		group.add( sphere );
 
 		
 		var mesh2 = new THREE.Mesh(geometry,material2);
@@ -117,6 +118,7 @@ function init() {
 		var newMesh = mesh2.clone();
 
 		var newMesh2 = newMesh.clone();
+		
 		
 
 		mesh2.position.set(0,0,-250);
