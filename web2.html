@@ -385,33 +385,7 @@
 
 		}
 
-		function initInput() {
-
-			window.addEventListener( 'keydown', function ( event ) {
-
-				switch ( event.keyCode ) {
-
-					// Q
-					case 81:
-						armMovement = 1;
-						break;
-
-					// A
-					case 65:
-						armMovement = - 1;
-						break;
-
-				}
-
-			}, false );
-
-			window.addEventListener( 'keyup', function () {
-
-				armMovement = 0;
-
-			}, false );
-
-		}
+		
 
 		function onWindowResize() {
 
