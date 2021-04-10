@@ -16,6 +16,7 @@
 			import * as THREE from 'https://threejs.org/build/three.module.js';
 
 			import { AnaglyphEffect } from 'https://threejs.org/examples/jsm/effects/AnaglyphEffect.js';
+			import { DeviceOrientationControls } from 'https://threejs.org/examples/jsm/controls/DeviceOrientationControls.js';
 
 			let container, camera, scene, renderer, effect;
 
@@ -36,10 +37,14 @@
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
+				
+				
 
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 100 );
 				camera.position.z = 3;
 				camera.focalLength = 3;
+				
+				controls = new DeviceOrientationControls( camera );
 
 				const path = "https://threejs.org/examples/textures/cube/pisa/";
 				const format = '.png';
