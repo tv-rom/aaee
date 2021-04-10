@@ -1,210 +1,149 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - effects - anaglyph</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+		<div id="info">
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - effects - anaglyph<br/>
+			skybox by <a href="http://ict.debevec.org/~debevec/" target="_blank" rel="noopener">Paul Debevec</a>
+		</div>
 
-<head>
-  <title>af</title>
+		<script type="module">
 
-  <style>
-    body{
-   		margin: 0;
-   		overflow: hidden;
-   		background-color: #000000;
-    }
+			import * as THREE from '../build/three.module.js';
 
-    canvas{
-    	background: #000000;
-    }
+			import { AnaglyphEffect } from './jsm/effects/AnaglyphEffect.js';
 
-    #copy{
-    position: absolute;
-    color:#ff5858;
-    display: block;
-    top:15%;
+			let container, camera, scene, renderer, effect;
 
-    margin-left: auto;
-    margin-right: auto;
-    width:100%;
-    text-align:center;
-    font-family: helvetica;
-    
-    }
+			const spheres = [];
 
+			let mouseX = 0;
+			let mouseY = 0;
 
-    #logo{
-    	
-    position: absolute;
-    display: block;
-    width:30%;
-    height: 100%;
-    left: 50%;
-    top: 20%;
-    
-    
-    }
+			let windowHalfX = window.innerWidth / 2;
+			let windowHalfY = window.innerHeight / 2;
 
+			document.addEventListener( 'mousemove', onDocumentMouseMove );
 
-   
-  </style>
-</head>
+			init();
+			animate();
 
-<body>
+			function init() {
 
-	<div id="copy">
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
 
+				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 100 );
+				camera.position.z = 3;
+				camera.focalLength = 3;
 
-</div>
+				const path = "textures/cube/pisa/";
+				const format = '.png';
+				const urls = [
+					path + 'px' + format, path + 'nx' + format,
+					path + 'py' + format, path + 'ny' + format,
+					path + 'pz' + format, path + 'nz' + format
+				];
 
+				const textureCube = new THREE.CubeTextureLoader().load( urls );
 
-	<script src="https://threejs.org/build/three.min.js"></script>
-<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-	<script src="https://threejs.org/examples/js/effects/OutlineEffect.js"></script>
+				scene = new THREE.Scene();
+				scene.background = textureCube;
 
-	<script>
+				const geometry = new THREE.SphereGeometry( 0.1, 32, 16 );
+				const material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube } );
 
+				for ( let i = 0; i < 500; i ++ ) {
 
-var group, container, renderer, scene, camera, controls, effect;
+					const mesh = new THREE.Mesh( geometry, material );
 
-init();
-animate();
+					mesh.position.x = Math.random() * 10 - 5;
+					mesh.position.y = Math.random() * 10 - 5;
+					mesh.position.z = Math.random() * 10 - 5;
 
-function init() {
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
 
-    // renderer
-    renderer = new THREE.WebGLRenderer({
-        antialias: true
-    });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0xccccff);
-    container = document.createElement('div');
-    document.body.appendChild(container);
-    container.appendChild(renderer.domElement);
+					scene.add( mesh );
 
-    // scene
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x5864ff );
+					spheres.push( mesh );
 
-    // camera
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.set(0, 200, 0);
-    camera.lookAt(scene.position);
+				}
 
-    // (camera) controls
-    // mouse controls: left button to rotate, 
-    //    mouse wheel to zoom, right button to pan
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    //controls.minDistance = 10;
-	//controls.maxDistance = 50;
+				//
 
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				container.appendChild( renderer.domElement );
 
-    group = new THREE.Group();
-	scene.add( group );
-	
-	
-	//lite
-	scene.add( new THREE.AmbientLight( 0xffffff ) );
-	
-	var pointLight = new THREE.PointLight(0xffffff,1);
-	pointLight.position.set(200,200,200);
-	scene.add(pointLight);
+				const width = window.innerWidth || 2;
+				const height = window.innerHeight || 2;
 
-				var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
-				directionalLight.position.set( 0, -1000, -1000 ).normalize();
-				//scene.add( directionalLight );
-	//logoloader
+				effect = new AnaglyphEffect( renderer );
+				effect.setSize( width, height );
 
-    var loader = new THREE.TextureLoader();
+				//
 
-// Load an image file into a custom material
-var logomaterial = new THREE.MeshLambertMaterial({
-  map: loader.load('https://s3.amazonaws.com/duhaime/blog/tsne-webgl/assets/cat.jpg')
-});
+				window.addEventListener( 'resize', onWindowResize );
 
-// create a plane geometry for the image with a width of 10
-// and a height that preserves the image's aspect ratio
-var logogeometry = new THREE.PlaneGeometry(10, 10*.75);
+			}
 
-// combine our image geometry and material into a mesh
-var logomesh = new THREE.Mesh(logogeometry, logomaterial);
+			function onWindowResize() {
 
-// set the position of the image mesh in the x,y,z dimensions
-logomesh.position.set(0,0,0)
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
 
-// add the image to the scene
-group.add(logomesh);
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
 
+				effect.setSize( window.innerWidth, window.innerHeight );
 
-	//stuff
-   
-		var geometry = new THREE.IcosahedronBufferGeometry(700,0);
-		var geometry2 = new THREE.IcosahedronBufferGeometry(7000, 1);
-		
-		var geometry3 = new THREE.SphereGeometry( 20, 32, 32 );
-		
-	
-		var material = new THREE.MeshBasicMaterial({
-					color: 0xff5858,	
-			});
-		var material2 = new THREE.MeshLambertMaterial({
-					color: 0x5864ff,
-					side: THREE.BackSide,
-                    shininess: 100,
-                    specular: 0xffffff,
-                    transparent: false,
-                    opacity:1,
-                    
-                    flatShading:true,
-						
-			});
-		
-	
-		var material3 = new THREE.MeshToonMaterial( {
-            color: 0x000000,
-            specular: 0xffffff,
-            shininess: 0,  
-            
-        } );
-		var sphere = new THREE.Mesh( geometry3, material3 );
-	
-		group.add( sphere );
+			}
 
-		
-		var mesh2 = new THREE.Mesh(geometry,material2);
+			function onDocumentMouseMove( event ) {
 
-		var newMesh = mesh2.clone();
+				mouseX = ( event.clientX - windowHalfX ) / 100;
+				mouseY = ( event.clientY - windowHalfY ) / 100;
 
-		var newMesh2 = newMesh.clone();
-		
-		
-		sphere.position.set(0,0,0);
-		mesh2.position.set(0,0,0);
-		newMesh2.position.set(0,0,0);
+			}
 
-		group.add( mesh2 );
-	
-	effect = new THREE.OutlineEffect( renderer );
-		
-    // events
-    window.addEventListener('resize', onWindowResize, false);
+			//
 
-}
+			function animate() {
 
-function onWindowResize(event) {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
+				requestAnimationFrame( animate );
 
-function animate() {
+				render();
 
-	requestAnimationFrame(animate);
-	group.rotation.y += 0.001;
-	group.rotation.x += 0.0005;
-    render();
-}
+			}
 
-function render(){
-	effect.render(scene, camera);
-}
-</script>
-</body>
+			function render() {
+
+				const timer = 0.0001 * Date.now();
+
+				camera.position.x += ( mouseX - camera.position.x ) * .05;
+				camera.position.y += ( - mouseY - camera.position.y ) * .05;
+
+				camera.lookAt( scene.position );
+
+				for ( let i = 0, il = spheres.length; i < il; i ++ ) {
+
+					const sphere = spheres[ i ];
+
+					sphere.position.x = 5 * Math.cos( timer + i );
+					sphere.position.y = 5 * Math.sin( timer + i * 1.1 );
+
+				}
+
+				effect.render( scene, camera );
+
+			}
+
+		</script>
+
+	</body>
 </html>
